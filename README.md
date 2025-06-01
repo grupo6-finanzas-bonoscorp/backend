@@ -42,7 +42,7 @@ La API está documentada con Swagger en:
 1. Asegúrate de tener Java 17+ y Maven instalados
 2. Configura la base de datos en `application.properties`
 3. Ejecuta: `mvn spring-boot:run`
-4. La aplicación estará disponible en: `http://localhost:8080`
+4. La aplicación estará disponible en: `[http://localhost:8080](http://localhost:8080/swagger-ui/index.html#/)`
 
 ## Solución de Problemas Comunes
 
