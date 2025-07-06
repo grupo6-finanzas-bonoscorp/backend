@@ -8,19 +8,21 @@ public class BonoResourceFromEntityAssembler {
     public static BonoResource toResourceFromEntity(Bono entity) {
         return new BonoResource(
                 entity.getId(),
+                entity.getCreadoPor(),
                 entity.getValorNominal(),
                 entity.getFechaEmision(),
                 entity.getFechaVencimiento(),
                 entity.getTasaInteres().valor(),
-                entity.getTipoTasa().name(),
-                entity.getFrecuenciaPago().name(),
+                entity.getTipoTasa().toString(),
+                entity.getFrecuenciaPago().toString(),
                 entity.getCuotasTotales(),
                 entity.getComisiones(),
                 entity.getGastosAdicionales(),
-                entity.getPeriodoGracia().name(),
+                entity.getPeriodoGracia().toString(),
                 entity.getDuracionGracia(),
                 entity.getEstado().name(),
-                entity.getCreadoPor()
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 } 

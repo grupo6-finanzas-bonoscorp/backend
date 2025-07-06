@@ -11,6 +11,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "bonos")
@@ -198,6 +199,27 @@ public class Bono extends AuditableAbstractAggregateRoot<Bono> {
             return (Long) field.get(this);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Error accessing id field", e);
+        }
+    }
+
+    // Getters para fechas de auditoría usando reflexión
+    public Date getCreatedAt() {
+        try {
+            var field = AuditableAbstractAggregateRoot.class.getDeclaredField("createdAt");
+            field.setAccessible(true);
+            return (Date) field.get(this);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Error accessing createdAt field", e);
+        }
+    }
+
+    public Date getUpdatedAt() {
+        try {
+            var field = AuditableAbstractAggregateRoot.class.getDeclaredField("updatedAt");
+            field.setAccessible(true);
+            return (Date) field.get(this);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException("Error accessing updatedAt field", e);
         }
     }
 } 

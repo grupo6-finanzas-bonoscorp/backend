@@ -2,9 +2,11 @@ package com.example.backendBonosCorp.bonos.interfaces.rest.resources;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 public record BonoResource(
         Long id,
+        String userRuc,
         BigDecimal valorNominal,
         LocalDate fechaEmision,
         LocalDate fechaVencimiento,
@@ -13,10 +15,11 @@ public record BonoResource(
         String frecuenciaPago,
         Integer cuotasTotales,
         BigDecimal comisiones,
-        BigDecimal gastosAdicionales,
+        BigDecimal gastos,
         String periodoGracia,
-        Integer duracionGracia,
+        Integer duracionPeriodoGracia,
         String estado,
-        String creadoPor
+        Date createdAt,
+        Date updatedAt
 ) {
 } 

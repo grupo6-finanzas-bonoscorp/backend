@@ -3,6 +3,7 @@ package com.example.backendBonosCorp.bonos.application.internal.queryservices;
 import com.example.backendBonosCorp.bonos.domain.model.aggregates.Bono;
 import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonosQuery;
 import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonoPorIdQuery;
+import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonosPorUsuarioQuery;
 import com.example.backendBonosCorp.bonos.domain.services.BonoQueryService;
 import com.example.backendBonosCorp.bonos.infrastructure.persistence.jpa.repositories.BonoRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,5 +31,10 @@ public class BonoQueryServiceImpl implements BonoQueryService {
     public Optional<Bono> handle(ObtenerBonoPorIdQuery query) {
         var currentUserRuc = SecurityContextHolder.getContext().getAuthentication().getName();
         return bonoRepository.findByIdAndCreadoPor(query.id(), currentUserRuc);
+    }
+
+    @Override
+    public List<Bono> handle(ObtenerBonosPorUsuarioQuery query) {
+        return bonoRepository.findByCreadoPor(query.ruc());
     }
 } 

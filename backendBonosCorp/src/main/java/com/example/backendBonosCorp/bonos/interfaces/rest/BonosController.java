@@ -3,12 +3,15 @@ package com.example.backendBonosCorp.bonos.interfaces.rest;
 import com.example.backendBonosCorp.bonos.domain.model.commands.EliminarBonoCommand;
 import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonosQuery;
 import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonoPorIdQuery;
+import com.example.backendBonosCorp.bonos.domain.model.queries.ObtenerBonosPorUsuarioQuery;
 import com.example.backendBonosCorp.bonos.domain.services.BonoCommandService;
 import com.example.backendBonosCorp.bonos.domain.services.BonoQueryService;
+import com.example.backendBonosCorp.bonos.domain.services.CalculosFinancierosService;
 import com.example.backendBonosCorp.bonos.interfaces.acl.UserContextFacade;
 import com.example.backendBonosCorp.bonos.interfaces.rest.resources.BonoResource;
 import com.example.backendBonosCorp.bonos.interfaces.rest.resources.CrearBonoResource;
 import com.example.backendBonosCorp.bonos.interfaces.rest.resources.EditarBonoResource;
+import com.example.backendBonosCorp.bonos.interfaces.rest.resources.FlujoCajaResource;
 import com.example.backendBonosCorp.bonos.interfaces.rest.transform.BonoResourceFromEntityAssembler;
 import com.example.backendBonosCorp.bonos.interfaces.rest.transform.CrearBonoCommandFromResourceAssembler;
 import com.example.backendBonosCorp.bonos.interfaces.rest.transform.EditarBonoCommandFromResourceAssembler;
@@ -27,13 +30,16 @@ public class BonosController {
 
     private final BonoCommandService bonoCommandService;
     private final BonoQueryService bonoQueryService;
+    private final CalculosFinancierosService calculosFinancierosService;
     private final UserContextFacade userContextFacade;
 
     public BonosController(BonoCommandService bonoCommandService, 
-                          BonoQueryService bonoQueryService, 
+                          BonoQueryService bonoQueryService,
+                          CalculosFinancierosService calculosFinancierosService,
                           UserContextFacade userContextFacade) {
         this.bonoCommandService = bonoCommandService;
         this.bonoQueryService = bonoQueryService;
+        this.calculosFinancierosService = calculosFinancierosService;
         this.userContextFacade = userContextFacade;
     }
 
@@ -41,6 +47,17 @@ public class BonosController {
     public ResponseEntity<List<BonoResource>> getAllBonos() {
         var obtenerBonosQuery = new ObtenerBonosQuery();
         var bonos = bonoQueryService.handle(obtenerBonosQuery);
+        var bonoResources = bonos.stream()
+                .map(BonoResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(bonoResources);
+    }
+
+    @GetMapping("/usuario")
+    public ResponseEntity<List<BonoResource>> getBonosByUsuario() {
+        var currentUserRuc = userContextFacade.getCurrentUserRuc();
+        var obtenerBonosPorUsuarioQuery = new ObtenerBonosPorUsuarioQuery(currentUserRuc);
+        var bonos = bonoQueryService.handle(obtenerBonosPorUsuarioQuery);
         var bonoResources = bonos.stream()
                 .map(BonoResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();
@@ -56,6 +73,17 @@ public class BonosController {
         }
         var bonoResource = BonoResourceFromEntityAssembler.toResourceFromEntity(bono.get());
         return ResponseEntity.ok(bonoResource);
+    }
+
+    @GetMapping("/{id}/flujo-caja")
+    public ResponseEntity<FlujoCajaResource> getFlujoCaja(@PathVariable Long id) {
+        var obtenerBonoPorIdQuery = new ObtenerBonoPorIdQuery(id);
+        var bono = bonoQueryService.handle(obtenerBonoPorIdQuery);
+        if (bono.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var flujoCaja = calculosFinancierosService.calcularFlujoCaja(bono.get());
+        return ResponseEntity.ok(flujoCaja);
     }
 
     @PostMapping

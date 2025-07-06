@@ -5,5 +5,10 @@ public enum FrecuenciaPago {
     BIMESTRAL,
     TRIMESTRAL,
     SEMESTRAL,
-    ANUAL
+    ANUAL;
+    
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 } 

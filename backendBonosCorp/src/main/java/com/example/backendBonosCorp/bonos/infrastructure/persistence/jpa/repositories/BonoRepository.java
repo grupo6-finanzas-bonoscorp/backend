@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface BonoRepository extends JpaRepository<Bono, Long> {
-    List<Bono> findByCreadoPor(String creadoPor);
     Optional<Bono> findByIdAndCreadoPor(Long id, String creadoPor);
+    List<Bono> findByCreadoPor(String creadoPor);
     boolean existsByIdAndCreadoPor(Long id, String creadoPor);
 } 
